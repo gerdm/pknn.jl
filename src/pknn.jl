@@ -1,6 +1,7 @@
 module pknn
 
 using Random
+using Einsum
 
 """
 Make two interleaving half circles.
@@ -33,6 +34,16 @@ function make_moons(; n_samples::Int=100, shuffle_rows::Bool=true, noise::Float6
     end
 
     return X, y
+end
+
+"""
+Compute the squared L2-norm between an input vector x
+and target vector X
+
+"""
+function l2_distance(x, X)
+    @einsum D[n1, n2] := (x[n1, m] - X[n2, m]) ^ 2
+    return D
 end
 
 end # module
