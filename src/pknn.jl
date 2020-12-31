@@ -5,7 +5,7 @@ using Einsum
 using Statistics
 
 # Use to create new dimensions
-new = [CartesianIndex]
+new = [CartesianIndex()]
 
 """
 Make two interleaving half circles.
@@ -75,6 +75,36 @@ function compute_likelihood(X, y; beta, k)
 
     likelihood = prod(num ./ den)
     return likelihood
+end
+
+
+function knn_mcmc(X, y; k, beta, target_samples=10_000, eta=1.)
+    samples = zeros(target_samples, 2)
+    n_rounds, n_samples = 0, 0
+    while n_samples < target_samples
+        n_rounds += 1
+
+        if n_rounds % 100 == 0
+            print("@it $n_rounds | samples=$n_samples\r")
+        end
+
+        beta_hat = abs(beta + randn() * eta)
+        k_hat = abs(k + rand(-4:4))
+        k_hat = max(1, k_hat)
+
+        L_hat = compute_likelihood(X, y, beta=beta_hat, k=k_hat)
+        L = compute_likelihood(X, y, beta=beta, k=k)
+        A = min(1, L_hat / L)
+
+        if A > rand()
+            n_samples += 1
+            samples[n_samples, 1] = k_hat
+            samples[n_samples, 2] = beta_hat
+            k, beta = k_hat, beta_hat
+        end
+    end
+
+    return samples, target_samples / n_rounds
 end
 
 end # module
