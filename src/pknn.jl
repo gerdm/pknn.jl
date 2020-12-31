@@ -42,8 +42,15 @@ and target vector X
 
 """
 function l2_distance(x, X)
-    @einsum D[n1, n2] := (x[n1, m] - X[n2, m]) ^ 2
+    @einsum D[n1, n2] := jjj(x[n1, m] - X[n2, m]) ^ 2
     return D
+end
+
+
+function find_k_closest(X; k=3)
+    D = l2_distance(X, X)
+    k_closest = mapslices(sortperm, D; dims=2)[:, begin:k]
+    return k_closest
 end
 
 end # module
