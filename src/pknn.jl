@@ -42,7 +42,7 @@ and target vector X
 
 """
 function l2_distance(x, X)
-    @einsum D[n1, n2] := jjj(x[n1, m] - X[n2, m]) ^ 2
+    @einsum D[n1, n2] := (x[n1, m] - X[n2, m]) ^ 2
     return D
 end
 
