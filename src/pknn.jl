@@ -2,6 +2,10 @@ module pknn
 
 using Random
 using Einsum
+using Statistics
+
+# Use to create new dimensions
+new = [CartesianIndex]
 
 """
 Make two interleaving half circles.
@@ -49,8 +53,28 @@ end
 
 function find_k_closest(X; k=3)
     D = l2_distance(X, X)
-    k_closest = mapslices(sortperm, D; dims=2)[:, begin:k]
+    # k-closest ommiting the element itself
+    k_closest = mapslices(sortperm, D; dims=2)[:, 2:k+1]
     return k_closest
+end
+
+
+function compute_likelihood(X, y; beta, k)
+    K = length(unique(y))
+    range_k = 0:K-1
+    k_closest = find_k_closest(X, k=k)
+
+    num = y[k_closest] .== y
+    num = exp.(beta * mean(num, dims=2))
+    den = y[k_closest] .== range_k[new, new, :]
+    den = sum(exp.(beta * mean(den, dims=2)), dims=3)
+
+    # Remove singleton dimensions
+    num = dropdims(num, dims=2)
+    den = dropdims(den, dims=(2, 3))
+
+    likelihood = prod(num ./ den)
+    return likelihood
 end
 
 end # module
