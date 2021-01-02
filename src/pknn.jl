@@ -80,13 +80,14 @@ function compute_likelihood(X, y; beta, k)
 end
 
 
-function knn_mcmc(X, y; k, beta, target_samples=10_000, eta=1.)
+function knn_mcmc(X, y; k, beta, target_samples=10_000, eta=1.,
+                  print_progress=false)
     samples = zeros(target_samples, 2)
     n_rounds, n_samples = 0, 0
     while n_samples < target_samples
         n_rounds += 1
 
-        if n_rounds % 100 == 0
+        if (n_rounds % 100 == 0) & print_progress
             print("@it $n_rounds | samples=$n_samples\r")
         end
 
