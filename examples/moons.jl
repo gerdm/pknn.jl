@@ -43,7 +43,11 @@ samples = samples[burnout:end, :]
 colors = [yn == 1 ? "crimson" : "deepskyblue3" for yn in y]
 k_samples = samples[:, 1]
 beta_samples = samples[:, 2]
-p1 = scatter(X[:, 1], X[:, 2], color=colors)
-p2 = freqplot(k_samples, label="k-hist")
-p3 = histogram(beta_samples, label="beta-hist")
-plot(p1, p2, p3)
+N_hist = 1:length(k_samples)
+p1 = scatter(X[:, 1], X[:, 2], color=colors, label=nothing, title="Dataset")
+p2 = freqplot(k_samples, label="k-samples")
+p3 = histogram(beta_samples, label="beta-samples")
+p4 = plot(beta_samples, label="beta-hist")
+plot!(N_hist, N_hist .* NaN, label="k-hist", color="orange")
+plot!(twinx(), k_samples, color="orange", label=nothing)
+plot(p1, p2, p3, p4)
