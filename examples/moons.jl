@@ -31,13 +31,14 @@ end
 
 X, y = pknn.make_moons(n_samples=150, noise=0.3, random_state=314)
 
-beta0, k0 = 10, 1
+k0, beta0 = 1, 10
 eta = 1.1
-samples, pacc = pknn.knn_mcmc(X, y, k=1, beta=1,
-                target_samples=3_000, eta=eta)
+target_samples = 5_000
+samples, pacc = pknn.knn_mcmc(X, y, k=k0, beta=beta0,
+                target_samples=target_samples, eta=eta)
 
 burnout = 1500
-samples = samples[begin:burnout, :]
+samples = samples[burnout:end, :]
 
 colors = [yn == 1 ? "crimson" : "deepskyblue3" for yn in y]
 k_samples = samples[:, 1]
