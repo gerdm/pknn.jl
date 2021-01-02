@@ -110,4 +110,22 @@ function knn_mcmc(X, y; k, beta, target_samples=10_000, eta=1.,
     return samples, target_samples / n_rounds
 end
 
+function sample_knn(X, y, configs; target_samples)
+    n_config = length(configs)
+    samples_v = zeros(n_config, target_samples, 2)
+    pacc_v = zeros(n_config)
+
+    Threads.@threads for i=1:n_config
+        config = configs[i]
+        beta = config["beta"]
+        k = config["k"]
+        eta = config["eta"]
+        samples, pacc = knn_mcmc(X, y; k=k, beta=beta, eta=eta,
+                 target_samples=target_samples)
+        samples_v[i, :, :] = samples
+        pacc_v[i] = pacc
+    end
+    return samples_v, pacc_v
+end
+
 end # module
