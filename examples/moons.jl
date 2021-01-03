@@ -56,9 +56,11 @@ p1 = scatter(X[:, 1], X[:, 2], color=colors, label=nothing, title="Dataset")
 
 p2 = freqplot(k_samples[1, :], label="k s(1)", alpha=0.5)
 freqplot!(k_samples[2, :], label="k s(2)", alpha=0.5)
+plot!(title="k-samples")
 
 p3 = histogram(beta_samples[1, :], label="beta s(1)", alpha=0.5)
 histogram!(beta_samples[2, :], label="beta s(2)", alpha=0.5)
+plot!(title="β-samples")
 
 p4 = plot(beta_samples[1, :], label=nothing)
 plot!(beta_samples[2, :], label=nothing, title="β-hist")
@@ -67,4 +69,4 @@ p5 = plot(k_samples[1, :], label=nothing)
 plot!(k_samples[2, :], label=nothing)
 plot!(title="k-hist")
 
-plot(p1, p2, p3, p4, p5, layout=l, dpi=200)
+plot(p1, p2, p3, p4, p5, layout=l)
