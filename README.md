@@ -1,6 +1,6 @@
 # Probabilistic k-nearest nerighbours
 
-![moons-pknn](https://imgur.com/8HYRSkZ.png)
+![moons-pknn](https://imgur.com/mVgYVbW.png)
 
 Let  <img src="https://render.githubusercontent.com/render/math?math=\mathcal D = \big\{(y_n, {\bf x}_n) \vert y_n \in \{c_q\}_{q=1}^Q, {\bf x}_n\in\mathbb{R}^M\big\}"> be a dataset.
 
