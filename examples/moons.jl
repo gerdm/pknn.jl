@@ -35,6 +35,18 @@ function freqplot!(x; kwargs...)
     bar!(values, freq; kwargs...)
 end
 
+function plot_surface(X, y, samples, Nx, Ny)
+    xmin, ymin = minimum(X, dims=1)
+    xmax, ymax = maximum(X, dims=1)
+    xx = range(xmin, xmax, length=Nx)
+    yy = range(ymin, ymax, length=Ny)
+    D = cat(xx' .* ones(Nx), ones(Ny)' .* yy, dims=3)
+    D = reshape(D, (:, 2))
+    P_res = pknn.infer(1, D, X, y, samples)
+    P_res = reshape(P_res, (Nx, Ny))
+    contourf(xx, yy, P_res, c=:RdBu, linewidth=0)
+end
+
 X, y = pknn.make_moons(n_samples=150, noise=0.3, random_state=314)
 
 target_samples = 3_000
@@ -42,17 +54,24 @@ config = [
     Dict("beta"=>10, "k"=>1, "eta"=>1.1),
     Dict("beta"=>5, "k"=>5, "eta"=>1.1), 
 ]
+println("start sampling")
 samples, pacc = pknn.sample_knn(X, y, config; target_samples=target_samples)
 burnout = 1500
 samples = samples[:, burnout:end, :]
 
-colors = [yn == 1 ? "crimson" : "deepskyblue3" for yn in y]
 k_samples = samples[:, :, 1]
 beta_samples = samples[:, :, 2]
 N_hist = 1:size(k_samples)[2]
 
+active_samples = hcat(reshape(k_samples, (:,1)), reshape(beta_samples, (:, 1)))
+
 l = @layout [a b; c [d; e]]
-p1 = scatter(X[:, 1], X[:, 2], color=colors, label=nothing, title="Dataset")
+colors = [yn == 1 ? "darkorange" : "turquoise3" for yn in y]
+Nx, Ny = 50, 50
+p1 = plot_surface(X, y, active_samples, Nx, Ny)
+scatter!(X[:, 1], X[:, 2], color=colors,
+             label=nothing, markerstrokewidth=0, marker=:+)
+plot!(xlim=(xmin, xmax), ylim=(ymin, ymax), title="Dataset")
 
 p2 = freqplot(k_samples[1, :], label="k s(1)", alpha=0.5)
 freqplot!(k_samples[2, :], label="k s(2)", alpha=0.5)
