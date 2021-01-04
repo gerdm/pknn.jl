@@ -45,7 +45,6 @@ end
 """
 Compute the squared L2-norm between an input vector x
 and target vector X
-
 """
 function l2_distance(x, X)
     @einsum D[n1, n2] := (x[n1, m] - X[n2, m]) ^ 2
@@ -53,8 +52,11 @@ function l2_distance(x, X)
 end
 
 
-function find_k_closest(X; k=3)
-    D = l2_distance(X, X)
+function find_k_closest(X, Z=nothing; k=3)
+    if Z == nothing
+        Z = X
+    end
+    D = l2_distance(Z, X)
     # k-closest ommiting the element itself
     k_closest = mapslices(sortperm, D; dims=2)[:, 2:k+1]
     return k_closest
@@ -126,6 +128,40 @@ function sample_knn(X, y, configs; target_samples)
         pacc_v[i] = pacc
     end
     return samples_v, pacc_v
+end
+
+
+function infer(yn, Xn, X, y, samples)
+    k_samples = samples[:, 1]
+    beta_samples = samples[:, 2]
+    n_samples = length(k_samples)
+    K = length(unique(y))
+    range_k = 0:K-1
+
+    n_test, _ = size(Xn)
+    P_values = zeros(n_test, n_samples)
+    D = l2_distance(Xn, X)
+    closest = mapslices(sortperm, D; dims=2)
+
+    Threads.@threads for i=1:n_samples
+        ki = Int(k_samples[i])
+        βi = beta_samples[i]
+        k_closest = closest[:, 1:ki]
+
+        num = y[k_closest] .== yn
+        num = exp.(βi * mean(num, dims=2))
+        den = y[k_closest] .== range_k[new, new, :]
+        den = sum(exp.(βi * mean(den, dims=2)), dims=3)
+
+        # Remove singleton dimensions
+        num = dropdims(num, dims=2)
+        den = dropdims(den, dims=(2, 3))
+        proba = num ./ den
+
+        P_values[:, i] = proba
+    end
+
+    return mean(P_values, dims=2)
 end
 
 end # module
