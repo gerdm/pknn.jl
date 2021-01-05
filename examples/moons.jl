@@ -45,6 +45,7 @@ function plot_surface(X, y, samples, Nx, Ny)
     P_res = pknn.infer(1, D, X, y, samples)
     P_res = reshape(P_res, (Nx, Ny))
     contourf(xx, yy, P_res, c=:RdBu, linewidth=0)
+    plot!(xlim=(xmin, xmax), ylim=(ymin, ymax))
 end
 
 X, y = pknn.make_moons(n_samples=150, noise=0.3, random_state=314)
@@ -71,7 +72,7 @@ Nx, Ny = 50, 50
 p1 = plot_surface(X, y, active_samples, Nx, Ny)
 scatter!(X[:, 1], X[:, 2], color=colors,
              label=nothing, markerstrokewidth=0, marker=:+)
-plot!(xlim=(xmin, xmax), ylim=(ymin, ymax), title="Dataset")
+plot!(title="Dataset")
 
 p2 = freqplot(k_samples[1, :], label="k s(1)", alpha=0.5)
 freqplot!(k_samples[2, :], label="k s(2)", alpha=0.5)
