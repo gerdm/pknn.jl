@@ -1,4 +1,4 @@
-name = "pknn"
+name = "Pknn"
 uuid = "06c24195-8d87-4028-8f21-e543ceb5d7cb"
 authors = ["Gerardo Duran <g.duran@me.com>"]
 version = "0.1.0"
