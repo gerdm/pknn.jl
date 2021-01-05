@@ -1,7 +1,3 @@
-using Pkg
-dir = "/Users/gerardoduran/Documents/repos/pknn"
-Pkg.activate(dir)
-# The file
 import Pknn
 
 using Plots
