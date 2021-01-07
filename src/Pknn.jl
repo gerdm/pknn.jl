@@ -3,6 +3,20 @@ module Pknn
 include("Model.jl")
 include("Utils.jl")
 
+"""
+    PKC(X, y, config, target_samples)
+
+Struct to work with a probabilistic K-nearest neighbours model
+with l2 distance
+
+# Arguments
+- `X::Array{Float64, 2}`: A features' matrix of asidsda
+    M features and N observations
+- `y::Array{Float64, 1}`: The target matrix of N binary (0,1) observations
+- `config::Array{Dict{String, Real}, 1}`: An array of dictionaries containing
+    the initial values for k,beta; as well as the step-size eta
+- `target_samples::Int64`: The number of samples per initial configuration
+"""
 mutable struct PKC
     X::Array{Float64, 2}
     y::Array{Float64, 1}
@@ -19,6 +33,13 @@ mutable struct PKC
 
 end
 
+"""
+    fit!(instance, burnout)
+
+Sample each configuration to obtain posterior samples for k and beta.
+This function returns an array of average accepted values and assigns
+posterior samples to the target_samples' matrix of the instance.
+"""
 function fit!(instance::PKC, burnout::Int64=1200)
     total_samples = burnout + instance.target_samples
     samples, pacc = Pknn.Model.sample_knn(instance.X, instance.y,
