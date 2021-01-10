@@ -2,7 +2,13 @@ import Pknn
 using Plots
 using StatsPlots
 
-X, y = Pknn.Utils.make_moons(n_samples=150, noise=0.3, random_state=314)
+begin
+    X, y = Pknn.Utils.make_moons(n_samples=200, noise=0.3, random_state=314)
+    X_test = X[151:end, :]
+    y_test = y[151:end]
+    X = X[begin:150, :]
+    y = y[begin:150]
+end
 
 # Initial sampling configuration
 config = [
@@ -17,10 +23,10 @@ println("Start sampling")
 pacc = Pknn.fit!(pknn, burnout)
 println(pacc)
 
-kch1 = Pknn.k_samples(pknn, 1)
-kch2 = Pknn.k_samples(pknn, 2)
-beta_ch1 = Pknn.beta_samples(pknn, 1)
-beta_ch2 = Pknn.beta_samples(pknn, 2)
+kch1 = Pknn.obtain_k_samples(pknn, 1)
+kch2 = Pknn.obtain_k_samples(pknn, 2)
+beta_ch1 = Pknn.obtain_beta_samples(pknn, 1)
+beta_ch2 = Pknn.obtain_beta_samples(pknn, 2)
 
 begin
     l = @layout [a b; c [d; e]]
