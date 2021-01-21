@@ -10,7 +10,7 @@ Make two interleaving half circles.
 """
 function make_moons(; n_samples::Int=100, shuffle_rows::Bool=true, noise::Float64=0.0,
                     random_state=nothing)
-    if random_state != nothing
+    if random_state !== nothing
         Random.seed!(random_state)
     end
     n_samples_out = n_samples ÷ 2

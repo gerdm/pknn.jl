@@ -19,7 +19,7 @@ end
 
 
 function find_k_closest(X, Z=nothing; k=3)
-    if Z == nothing
+    if Z === nothing
         Z = X
     end
     D = l2_distance(Z, X)
