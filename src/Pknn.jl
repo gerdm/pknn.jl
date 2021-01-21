@@ -101,19 +101,21 @@ Approximate the predictive distribution for a given class
 function infer(instance::PKC, X)
     range_k = collect(0:(instance.K - 1))[newx, newx, :]
 
-    k_samples = obtain_k_samples(instance)
+    k_samples = Int.(obtain_k_samples(instance))
     beta_samples = obtain_beta_samples(instance)
     param_samples = length(k_samples)
 
     n_test, _ = size(X)
     # Probability map containing the distribution
-    # values of each entry in X
+    # values of each entry in X:
+    # (number of samples × testing observations × number of classes)
     proba_map = zeros(param_samples, n_test, instance.K)
+    # Distance between test and training datasets
     D = Pknn.Model.l2_distance(X, instance.X)
     distance_matrix = mapslices(sortperm, D; dims=2)
 
-    Threads.@threads for i=1:n_test
-        ki = Int(k_samples[i])
+    Threads.@threads for i=1:param_samples
+        ki = k_samples[i]
         βi = beta_samples[i]
         k_closest = distance_matrix[:, begin:ki]
 
