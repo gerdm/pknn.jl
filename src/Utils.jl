@@ -57,14 +57,12 @@ end
 function freqplot(x; kwargs...)
     elements = frequency(x)
     values, freq = elements[:, 1], elements[:, 2]
-    print(kwargs)
     bar(values, freq; kwargs...)
 end
 
 function freqplot!(x; kwargs...)
     elements = frequency(x)
     values, freq = elements[:, 1], elements[:, 2]
-    print(kwargs)
     bar!(values, freq; kwargs...)
 end
 
