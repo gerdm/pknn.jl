@@ -53,4 +53,5 @@ begin
     plot!(title="k-hist")
 
     plot(p1, p2, p3, p4, p5, layout=l)
+    savefig("./moons.png")
 end
