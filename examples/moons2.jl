@@ -46,10 +46,10 @@ end
 n_train = 22
 sample_and_plot(n_samples, n_train, noise, burnout, config, target_samples, random_state)
 
-values = 22:2:300
+values = 22:2:200
 n_its = length(values)
 anim = @animate for (i, n_train) ∈ enumerate(values)
-    println("@it $i/$n_its")
+    println("@it $i/$n_train")
     sample_and_plot(n_samples, n_train, noise, burnout, config, target_samples, random_state)
 end
 gif(anim, "moons_evolve_freq.gif", fps=15)
