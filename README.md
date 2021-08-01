@@ -1,4 +1,4 @@
-# Probabilistic k-nearest nerighbours
+# Probabilistic k-nearest neighbours
 
 ![moons-pknn](https://imgur.com/iEdcT5x.png)
 
